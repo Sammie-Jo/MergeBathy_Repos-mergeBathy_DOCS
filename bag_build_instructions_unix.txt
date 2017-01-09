@@ -1,0 +1,291 @@
+Go To: http://www.opennavsurf.org/
+and download the appropriate package.
+
+These instructions were performed with OpenNS_Release_1.5.3.tar.gz.
+=========================================================================================
+*To build Debug: change all 'Release' to 'Debug'
+*To build 32bit: change all 'x64' to 'x86'
+
+beecrypt-4.1.2 
+extract 
+instructions found in ./INSTALL
+make sure beecrypt extracted to folder name is only ./beecrypt
+copy .h files into a new sub-folder ./beecrypt (beecrypt-4.2.1 does not require copying .h files into a new ./beecrypt folder)
+make sure python-devel is installed (2.6)
+example:
+>sudo yum install  python-devel.i686 0:2.6.6-52.el6 python-devel.x86_64 0:2.6.6-52.el6 
+>sudo yum install libstdc++-devel.x86_64 libstdc++-devel.i686
+
+x64:
+>./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x64/Release
+>./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x64/Debug --enable-debug
+x86: 
+>./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x86/Release --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+>./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x86/Debug --enable-debug --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+>make
+>sudo make install
+>make clean (to clean build files)
+>make distclean (to rebuild for different ./configure settings)
+rename ./lib64 to ./lib
+
+i686-pc-linux-gnu 
+i686-linux-gnu
+i686-redhat-linux-gnu
+x86_64-redhat-linux-gnu
+i686 = 32-bit Intel x86 arch 
+x86_64 = 64-bit Intel x86 arch
+--build=the architecture of the build machine
+--host=the architecture that you want the file to run on
+--target=if the package being built is itself a cross-compiler: its target architecture. 
+
+=============================================================================
+hdf5
+extract
+instructions found in ./INSTALL
+x64:
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Release
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Debug --enable-debug=all
+x86:
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Release --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Debug --enable-debug=all --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+$ make
+$ make check                # run test suite.
+$ sudo make install
+$ make check-install        # verify installation.
+
+=============================================================================
+libxml2
+extract
+instructions found in ./INSTALL
+'./configure; make; make install'	
+x64:
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x64/Release 
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x64/Debug --with-debug
+x86:
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Release --build=x86_64-redhat-linux-gnu --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Debug --with-debug --build=x86_64-redhat-linux-gnu --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+$ make
+$ make check                # run test suite.
+$ sudo make install
+$ make check-install        # verify installation.
+
+=============================================================================
+*To build Debug: change all 'Release' to 'Debug'
+*To build 32bit: change all 'x64' to 'x86'
+Download CMAKE; open CMAKE-GUI
+Where is the source code: /home/sam/Desktop/OpenNS_Release_1.5.3/api
+Where to build the binaries: /home/sam/Desktop/OpenNS_Release_1.5.3/build/x64/Release
+check Grouped and Advanced
+press configure
+UNIX Makefile Generator > Use default native compilers
+Change Beecrypt, hdf5, and libxml2 include directory paths to newly installed locations
+specify configuration CMAKE > CMAKE_BUILD_TYPE > type Release
+cd to build/x64/Release folder
+>make
+
+Errors:
+Scanning dependencies of target bag
+[  6%] Building C object CMakeFiles/bag.dir/bag_attr.o
+In file included from /home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_private.h:39,
+                 from /home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_attr.c:27:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag.h:120: error: redefinition of typedef ‘bagError’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/stdtypes.h:53: note: previous declaration of ‘bagError’ was here
+SOLUTION:
+	bag.h ln 120 and stdtypes.h ln 53
+	#ifndef bagErrorFlag
+	typedef s32 bagError;
+	#define bagErrorFlag 
+	#endif
+
+>make
+Scanning dependencies of target bag
+[  6%] Building C object CMakeFiles/bag.dir/bag_attr.o
+[ 13%] Building C object CMakeFiles/bag.dir/bag_crypto.o
+[ 20%] Building C object CMakeFiles/bag.dir/bag_hdf.o
+[ 26%] Building CXX object CMakeFiles/bag.dir/bag_metadata.o
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata.cpp: In function ‘Bool initDataQualityInfo(BAG_DATA_QUALITY*)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata.cpp:356: error: ‘_strdup’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata.cpp: In function ‘Bool initSpatialRepresentationInfo(BAG_SPATIAL_REPRESENTATION*)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata.cpp:407: error: ‘_strdup’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata.cpp: In function ‘bagError bagInitMetadata(BAG_METADATA*)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata.cpp:512: error: ‘_strdup’ was not declared in this scope
+make[2]: *** [CMakeFiles/bag.dir/bag_metadata.o] Error 1
+make[1]: *** [CMakeFiles/bag.dir/all] Error 2
+make: *** [all] Error 2
+SOLUTION:
+	bag_metadata.cpp ln 18:
+	#ifndef __cplusplus
+	#define _strdup strdup
+	#endif
+	//Add this
+	#ifndef __MSC_VER
+	#define _strdup strdup
+	#endif
+
+>make
+Scanning dependencies of target bag
+[  6%] Building CXX object CMakeFiles/bag.dir/bag_metadata.o
+[ 13%] Building CXX object CMakeFiles/bag.dir/bag_metadata_export.o
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:12:27: error: libxml/parser.h: No such file or directory
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:30: error: expected ‘)’ before ‘&’ token
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:50: error: expected type-specifier before ‘xmlChar’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:57: error: ISO C++ forbids declaration of ‘xmlChar’ with no type
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:57: error: expected ‘;’ before ‘*’ token
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp: In destructor ‘<unnamed>::EncodedString::~EncodedString()’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:40: error: ‘class<unnamed>::EncodedString’ has no member named ‘m_pEncodedString’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:40: error: ‘xmlFree’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp: At global scope:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:92: error: expected constructor, destructor, or type conversion before ‘*’ token
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:110: error: expected constructor, destructor, or type conversion before ‘*’ token
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:1250: error: expected ‘}’ at end of input
+make[2]: *** [CMakeFiles/bag.dir/bag_metadata_export.o] Error 1
+make[1]: *** [CMakeFiles/bag.dir/all] Error 2
+make: *** [all] Error 2
+SOLUTION:
+	This means you gave CMAKE the wrong path to your libxml includes directory; update path in CMAKE:
+	/home/sam/Desktop/MergeBathy_Repos/mergeBathy_CPP/extlibs/libs_unix/libxml2/x64/Release/include/libxml2
+	press configure, generate
+
+>make
+Scanning dependencies of target bag
+[  6%] Building C object CMakeFiles/bag.dir/bag_attr.o
+[ 13%] Building C object CMakeFiles/bag.dir/bag_crypto.o
+[ 20%] Building C object CMakeFiles/bag.dir/bag_hdf.o
+[ 26%] Building CXX object CMakeFiles/bag.dir/bag_metadata.o
+[ 33%] Building CXX object CMakeFiles/bag.dir/bag_metadata_export.o
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp: In function ‘u32 bagExportMetadataToXmlBuffer(BAG_METADATA*, u8**)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_export.cpp:1245: error: ‘memcpy’ was not declared in this scope
+make[2]: *** [CMakeFiles/bag.dir/bag_metadata_export.o] Error 1
+make[1]: *** [CMakeFiles/bag.dir/all] Error 2
+make: *** [all] Error 2
+SOLUTION:
+	bag_metadata_export.cpp add:
+	#include <cstring>
+
+>make
+Scanning dependencies of target bag
+[  6%] Building C object CMakeFiles/bag.dir/bag_attr.o
+[ 13%] Building C object CMakeFiles/bag.dir/bag_crypto.o
+[ 20%] Building C object CMakeFiles/bag.dir/bag_hdf.o
+[ 26%] Building CXX object CMakeFiles/bag.dir/bag_metadata.o
+[ 33%] Building CXX object CMakeFiles/bag.dir/bag_metadata_export.o
+[ 40%] Building CXX object CMakeFiles/bag.dir/bag_metadata_import.o
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp: In function ‘u8*<unnamed>::getPropertyAsString(const xmlNode&, const char*, const char*)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:292: error: ‘_strdup’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp: In function ‘u8*<unnamed>::getContentsAsString(const xmlNode&, const char*)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:315: error: ‘_strdup’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp: In function ‘Bool decodeDataIdentificationInfo(const xmlNode&, BAG_IDENTIFICATION*, u16)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:922: error: ‘strdup’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp: In function ‘Bool decodeReferenceSystemInfoFromSpatial(const BAG_SPATIAL_REPRESENTATION*, BAG_REFERENCE_SYSTEM*, u16)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1045: error: ‘strchr’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1050: error: ‘strncmp’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1053: error: ‘strdup’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp: In function ‘Bool decodeReferenceSystemInfo(const xmlNode&, BAG_REFERENCE_SYSTEM*, u16)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1090: error: ‘memset’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1097: error: ‘strncpy’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1133: error: ‘strdup’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1142: error: ‘strncpy’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1150: error: ‘strdup’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp: In function ‘bagError bagImportMetadataFromXmlV1(xmlDoc&, BAG_METADATA*)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1264: error: ‘strdup’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_metadata_import.cpp:1335: error: ‘strncpy’ was not declared in this scope
+make[2]: *** [CMakeFiles/bag.dir/bag_metadata_import.o] Error 1
+make[1]: *** [CMakeFiles/bag.dir/all] Error 2
+make: *** [all] Error 2
+SOLUTION: 
+	bag_metadata_import.cpp add:
+	#include <cstring>
+
+	#ifndef __MSC_VER
+	#define _strdup strdup
+	#endif
+
+>make
+Scanning dependencies of target bag
+[  6%] Building C object CMakeFiles/bag.dir/bag_attr.o
+[ 13%] Building C object CMakeFiles/bag.dir/bag_crypto.o
+[ 20%] Building C object CMakeFiles/bag.dir/bag_hdf.o
+[ 26%] Building CXX object CMakeFiles/bag.dir/bag_metadata.o
+[ 33%] Building CXX object CMakeFiles/bag.dir/bag_metadata_export.o
+[ 40%] Building CXX object CMakeFiles/bag.dir/bag_metadata_import.o
+[ 46%] Building CXX object CMakeFiles/bag.dir/bag_legacy.o
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:58: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:65: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:65: warning: deprecated conversion from string constant to ‘char*’
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_legacy.cpp:65: warning: deprecated conversion from string constant to ‘char*’
+[ 53%] Building C object CMakeFiles/bag.dir/bag_opt_group.o
+[ 60%] Building C object CMakeFiles/bag.dir/bag_opt_surfaces.o
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_opt_surfaces.c: In function ‘bagGetOptDataPointer’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_opt_surfaces.c:577: warning: return from incompatible pointer type
+[ 66%] Building CXX object CMakeFiles/bag.dir/bag_reference_system.o
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp: In function ‘std::string<unnamed>::ellipsoidToWkt(const u8*)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:157: error: ‘strncpy’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:160: error: ‘strtok’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp: In function ‘bagError bagLegacyToWkt(bagLegacyReferenceSystem, char*, u32, char*, u32)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:561: error: ‘strlen’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:570: error: ‘strcpy’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:924: error: ‘strcpy’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp: In function ‘bagError bagWktToLegacy(const char*, const char*, bagLegacyReferenceSystem*)’:
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:964: error: ‘memset’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:967: error: ‘strlen’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:976: error: ‘strcpy’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:980: error: ‘strlen’ was not declared in this scope
+/home/sam/Desktop/OpenNS_Release_1.5.3/api/bag_reference_system.cpp:993: error: ‘strcpy’ was not declared in this scope
+make[2]: *** [CMakeFiles/bag.dir/bag_reference_system.o] Error 1
+make[1]: *** [CMakeFiles/bag.dir/all] Error 2
+make: *** [all] Error 2
+SOLUTION:
+	bag_reference_system.cpp add:
+	#include <cstring>
+	
+>make
+...
+Linking CXX static library libbag.a
+[100%] Built target bag
+
+Make sure libbag.a was successfully built:
+>make clean
+>make
+...
+Linking CXX static library libbag.a
+[100%] Built target bag
+
+
+
+
+
+Also, don't forget the requirement for BAG_HOME before trying the examples:
+
+export	BAG_HOME=$PWD/../configdata
+setenv  BAG_HOME $PWD/../configdata
