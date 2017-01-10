@@ -9,6 +9,17 @@ Desktop.ini
 $RECYCLE.BIN/
 
 # Mercurial files
+.hg*
+HG_Stable*
+Documentation_Resources*
+mergeBathy/*
+UncertaintyEstimator/*
+uncertaintyEstimator*
+OBF*
+*TestReport*
+*FlowStructure*
+*WhitePaper*
+*TechManual*
 
 *gitignore
 
