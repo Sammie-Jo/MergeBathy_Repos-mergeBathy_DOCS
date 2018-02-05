@@ -1,7 +1,23 @@
 Go To: http://www.opennavsurf.org/
 and download the appropriate package.
 
-These instructions were performed with OpenNS_Release_1.5.3.tar.gz.
+These instructions were performed with OpenNS_Release_1.5.3.tar.gz on CentOS 6 and 7 (64-bit)
+make sure to do an update
+>sudo yum update
+=========================================================================================
+Enable EPEL repo 
+## RHEL/CentOS 6 32-Bit ##
+wget http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+sudo rpm -ivh epel-release-6-8.noarch.rpm
+
+## RHEL/CentOS 6 64-Bit ##
+wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+sudo rpm -ivh epel-release-6-8.noarch.rpm
+
+## RHEL/CentOS 7 64-Bit ##
+wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo rpm -ivh epel-release-latest-7.noarch.rpm
+
 =========================================================================================
 *To build Debug: change all 'Release' to 'Debug'
 *To build 32bit: change all 'x64' to 'x86'
@@ -10,11 +26,20 @@ beecrypt-4.1.2
 extract 
 instructions found in ./INSTALL
 make sure beecrypt extracted to folder name is only ./beecrypt
-copy .h files into a new sub-folder ./beecrypt (beecrypt-4.2.1 does not require copying .h files into a new ./beecrypt folder)
+>mv beecrypt-4.1.2 beecrypt
+>cd beecrypt
+copy .h files into a new sub-folder './beecrypt' (beecrypt-4.2.1 does not require copying .h files into a new ./beecrypt folder)
+>mkdir beecrypt
+>cp *.h beecrypt
 make sure python-devel is installed (2.6)
 example:
->sudo yum install  python-devel.i686 0:2.6.6-52.el6 python-devel.x86_64 0:2.6.6-52.el6 
+>sudo yum install python-devel.i686 0:2.6.6-52.el6 python-devel.x86_64 0:2.6.6-52.el6 
 >sudo yum install libstdc++-devel.x86_64 libstdc++-devel.i686
+>sudo yum install glibc-devel.x86_64 glibc-devel.i686
+>sudo yum install python-libs.i686
+
+>chmod +x ./configure 
+>chmod -R +x OpenNS_Release_1.5.3/
 
 x64:
 >./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x64/Release
@@ -22,11 +47,22 @@ x64:
 x86: 
 >./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x86/Release --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
 >./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x86/Debug --enable-debug --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+
 >make
 >sudo make install
 >make clean (to clean build files)
 >make distclean (to rebuild for different ./configure settings)
-rename ./lib64 to ./lib
+
+Rename folders
+x64
+>mv ../installs/beecrypt/x64/Release/lib64 ../installs/beecrypt/x64/Release/lib
+>mv ../installs/beecrypt/x64/Debug/lib64 ../installs/beecrypt/x64/Debug/lib
+x86
+>mv ../installs/beecrypt/x86/Release/lib64 ../installs/beecrypt/x86/Release/lib
+>mv ../installs/beecrypt/x86/Debug/lib64 ../installs/beecrypt/x86/Debug/lib
+
+Notes:
+if errors from 'make' do 'make clean' and 'make distclean'
 
 i686-pc-linux-gnu 
 i686-linux-gnu
@@ -38,21 +74,38 @@ x86_64 = 64-bit Intel x86 arch
 --host=the architecture that you want the file to run on
 --target=if the package being built is itself a cross-compiler: its target architecture. 
 
+cd ../
 =============================================================================
 hdf5
 extract
 instructions found in ./INSTALL
+>cd hdf5-1.8.9/
+
 x64:
-$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Release
-$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Debug --enable-debug=all
+$ ./configure --disable-production --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Release
+$ ./configure --disable-production --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Debug --enable-debug=all
 x86:
-$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Release --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
-$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Debug --enable-debug=all --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+$ ./configure --disable-production --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Release --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+$ ./configure --disable-production --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Debug --enable-debug=all --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
 $ make
 $ make check                # run test suite.
 $ sudo make install
 $ make check-install        # verify installation.
 
+Notes:
+May get 4 errors from 'make check' with the majority passing.  This may be due to compiler optimization level flags.
+I tried to lowering the optimization flag from -O3 to -O0 (capital o+zero), by calling CFLAGS=-O0 ./configure ... 
+and by hardcoding PROD_CFLAGS="-O0" in ./configure/gnu-flags, but neither work. See https://support.hdfgroup.org/HDF5/release/known_problems/previssues.html 
+adding --disable-production however did.
+make[4]: *** [dt_arith.chkexe_] Error 1
+make[4]: Leaving directory `..'
+make[3]: *** [build-check-s] Error 2
+make[3]: Leaving directory `..'
+make[2]: *** [test] Error 2
+make[2]: Leaving directory `..'-
+make[1]: *** [check-am] Error 2
+make[1]: Leaving directory `..'
+make: *** [check-recursive] Error 1 
 =============================================================================
 libxml2
 extract
@@ -62,13 +115,18 @@ x64:
 $ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x64/Release 
 $ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x64/Debug --with-debug
 x86:
-$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Release --build=x86_64-redhat-linux-gnu --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
-$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Debug --with-debug --build=x86_64-redhat-linux-gnu --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Release --build=x86_64-redhat-linux-gnu --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32 --with-python=/usr/lib/ --with-lzma=/usr/lib/
+$ ./configure --prefix=/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Debug --with-debug --build=x86_64-redhat-linux-gnu --host=i686-redhat-linux-gnu CFLAGS=-m32 CXXFLAGS=-m32 LDFLAGS=-m32 --with-python=/usr/lib/ --with-lzma=/usr/lib/
+
 $ make
 $ make check                # run test suite.
 $ sudo make install
-$ make check-install        # verify installation.
+$ make distclean
 
+if errors:
+>sudo yum install zlib-devel.i686 
+if more errors
+>sudo yum install xz-devel.i686
 =============================================================================
 *To build Debug: change all 'Release' to 'Debug'
 *To build 32bit: change all 'x64' to 'x86'
@@ -79,7 +137,11 @@ check Grouped and Advanced
 press configure
 UNIX Makefile Generator > Use default native compilers
 Change Beecrypt, hdf5, and libxml2 include directory paths to newly installed locations
-specify configuration CMAKE > CMAKE_BUILD_TYPE > type Release
+specify configuration CMAKE > 
+CMAKE_BUILD_TYPE > type Release
+CMAKE_C_FLAGS > -m32
+CMAKE_CXX_FLAGS > -m32
+configure and generate
 cd to build/x64/Release folder
 >make
 
@@ -280,10 +342,67 @@ Make sure libbag.a was successfully built:
 ...
 Linking CXX static library libbag.a
 [100%] Built target bag
+=============================================================================
+Copy all library dependencies to the same folder as the newly built libraries
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/build/x64/Debug/libbagd.a' '/home/sam/Desktop/OpenNS_Release_1.5.3/build/x64/Debug/bagdepends/' 
 
+x64:
+>sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x64/Release/lib/libbeecrypt.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x64/Release/lib'
+>sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Release/lib/libhdf5.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Release/lib'
+>sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x64/Release/lib/libxml2.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x64/Release/lib'
 
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x64/Debug/lib/libbeecrypt.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x64/Debug/lib'
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Debug/lib/libhdf5.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x64/Debug/lib'
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x64/Debug/lib/libxml2.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x64/Debug/lib'
 
+x86:
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x86/Release/lib/libbeecrypt.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x86/Release/lib'
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Release/lib/libhdf5.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Release/lib'
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Release/lib/libxml2.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Release/lib'
 
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x86/Debug/lib/libbeecrypt.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/beecrypt/x86/Debug/lib'
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Debug/lib/libhdf5.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/hdf5/x86/Debug/lib'
+sudo bash cpld.bash '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Debug/lib/libxml2.so' '/home/sam/Desktop/OpenNS_Release_1.5.3/extlibs/installs/libxml2/x86/Debug/lib'
+
+save the following as cpld.bash:
+#!/bin/bash 
+# Author : Hemanth.HM
+# Email : hemanth[dot]hm[at]gmail[dot]com
+# License : GNU GPLv3
+#
+
+function useage()
+{
+    cat << EOU
+Useage: bash $0 <path to the binary> <path to copy the dependencies>
+EOU
+exit 1
+}
+
+#Validate the inputs
+[[ $# < 2 ]] && useage
+
+#Check if the paths are vaild
+[[ ! -e $1 ]] && echo "Not a vaild input $1" && exit 1 
+[[ -d $2 ]] || echo "No such directory $2 creating..."&& mkdir -p "$2"
+
+#Get the library dependencies
+echo "Collecting the shared library dependencies for $1..."
+deps=$(ldd $1 | awk 'BEGIN{ORS=" "}$1\
+~/^\//{print $1}$3~/^\//{print $3}'\
+ | sed 's/,$/\n/')
+echo "Copying the dependencies to $2"
+
+#Copy the deps
+for dep in $deps
+do
+    echo "Copying $dep to $2"
+    cp "$dep" "$2"
+done
+
+echo "Done!"
+
+=============================================================================
 
 Also, don't forget the requirement for BAG_HOME before trying the examples:
 
